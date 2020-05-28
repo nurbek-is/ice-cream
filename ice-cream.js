@@ -10,14 +10,12 @@ function addError(field) {
   error.className = 'error';
   field.parentNode.insertBefore(error, field);
 }
-
 function removeError(field) {
   if (field.previousElementSibling &&
     field.previousElementSibling.className === 'error') {
     field.previousElementSibling.remove();
   }
 }
-
 function checkField(field) {
   if (!field.checkValidity()) {
     addError(field);
@@ -34,12 +32,39 @@ function checkSelect(field) {
     removeError(field);
   }
 }
+function getSelectedRadio (radioArray) {
+  for(btn of radioArray) {
+    if(btn.checked) {
+      return btn;
+    }
+  }
+  return null
+}
+
+function checkWhip(whip) {
+  const radioArray = document.querySelectorAll('input[name="container"]');
+  const selectedContainer = getSelectedRadio(radioArray);
+  if(!selectedContainer) {
+    return true; // container not selected, there is no error
+  }
+  if(whip.checked && selectedContainer.value !=='cup') {
+    addError(whip);
+    return false;
+  } else {
+    removeError(whip)
+  }
+  return true;
+}
+
 window.addEventListener('load', function(e) {
   const form  = document.getElementById('ice-cream-form');
+  const whip = form.whip; 
+  whip.dataset.errorMsg = "You cannot have whippped cream on a cone"
+
   const userName=form.username;
   userName.dataset.errorMsg='Your input should be between  ' + userName.minLength + ' and ' + userName.maxLength + ' characters '
-  const answer = form.container[0];
-  answer.dataset.errorMsg = "please select one of the options";
+  const radioAnswer = form.container[0];
+  radioAnswer.dataset.errorMsg = "please select one of the options";
   const userEmail = form.email;
   userEmail.dataset.errorMsg = 'please type in a valid email';
   
@@ -55,38 +80,24 @@ window.addEventListener('load', function(e) {
     checkField(textArea)
   })
   const cb = form.terms;
-  cb.dataset.errorMsg = 'You need to check this checkbox';
+  cb.dataset.errorMsg = 'You must accept the terms';
   cb.addEventListener('input',function(e){
     checkField(cb)
   })
 
-function checkTopping() {
-    const sprinkles = document.getElementById('sprinkles')
-    const nuts = document.getElementById('nuts')
-    const whip = document.getElementById('whip')
-    const toppings = [form.sprinkles,form.nuts,form.whip]
-    for(i=0;i<toppings.length;i++) {
-      toppings[i].addEventListener ('click',function (e) {
-        checkField(sprinkles)
-        checkField(nuts)
-        checkField(whip)
-        })
-      if(toppings[i].checked) {
-        removeError(sprinkles)
-        return;
-        }  
-      toppings[0].dataset.errorMsg = 'please select a topping';
-      addError(sprinkles)
-    }
-  }
   selectFlavor.addEventListener('change',function (e) {
     checkSelect(selectFlavor)
             })
-  for (let button of form.container) {
-    button.addEventListener('click', function(e) {
-      checkField(answer)
+  for (let radioBtn of form.container) {
+    radioBtn.addEventListener('click', function(e) {
+      checkField(radioAnswer);
+      checkWhip(whip);
       });
   }
+  whip.addEventListener('click',function (e) {
+    checkWhip('whip')
+  })
+
   userEmail.addEventListener('input',function(e) {
     checkField(userEmail)
   }) 
@@ -97,18 +108,19 @@ function checkTopping() {
     checkField(userPhone)
   });
   form.addEventListener('submit',function(e){
-    e.preventDefault();
     checkField(userName);
     checkField(userEmail);
     checkField(userPhone);
-    checkField(answer);
+    checkField(radioAnswer);
     checkSelect(selectFlavor);
     checkField(textArea);
     checkField(cb);
-    checkTopping(sprinkles);
+    // checkTopping(sprinkles);
+    const whipValid = checkWhip(whip)
+
     
-    if(!form.checkValidity()) {
-      e.preventDefault();
+    if(!form.checkValidity() ||!whipValid) {
+       e.preventDefault();
       alert('please fix form errors')
        }
     })
