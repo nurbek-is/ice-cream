@@ -1,0 +1,68 @@
+form {
+display: flex;
+flex-direction: column;
+width:40%;
+margin: 10px auto;
+box-sizing: border-box;
+} 
+ label.required,legend.required {
+    font-weight: bolder;
+    color:green;
+}
+input[type='email'],input[type='text'],textarea#requests:invalid {
+    background-color: pink;   
+    box-sizing: border-box;
+    font-size: large;
+    padding: 4px;
+    width: 100%;
+}
+fieldset#container, input[type='email'],input[type='text'],select#flavor {
+    border-bottom: 5px solid green;
+}
+input[type='text']:active,select#flavor:active,textarea:active,input[type='email']:active,input[type='tel']:active {
+  border-right:6px solid maroon;
+}
+fieldset#container {
+  margin: 7px 0px;  
+}
+button {
+    color:white;
+    background-color: green;
+    line-height: 30px;
+}
+input[type='checkbox'],label:invalid {
+    color:red;
+    margin-top: 8px;
+    margin-right: 0px;
+}
+#divterms {
+    display:flex;
+    flex-direction:row;
+}
+
+#labelid {
+ margin: 5px;
+} 
+label.required::after {
+    content:"*";
+}
+label.required:hover::after {
+    content:"field is required";
+}
+input[type='checkbox']:invalid + label{
+    color:red;
+    margin:10px 0px;
+}
+form >* {
+    margin:5px 0px;
+}
+input#phone {
+    font-size: large;
+    padding: 4px;
+}
+input[type='email'],input[type='text']:invalid {
+background: pink, url('../Images/warning.png') right no-repeat;
+background-repeat: no-repeat;
+background-position: 99% 5px;
+padding-left: 17px;
+}
